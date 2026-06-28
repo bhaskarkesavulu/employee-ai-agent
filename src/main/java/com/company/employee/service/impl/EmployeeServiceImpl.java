@@ -1,7 +1,9 @@
 package com.company.employee.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.company.employee.dto.EmployeeRequest;
@@ -31,14 +33,33 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeResponse> findAll() {
+public Page<EmployeeResponse> findAll(
+        int page,
+        int size,
+        String sortBy,
+        String direction
+){
 
-        return repository.findAll()
-                .stream()
-                .map(EmployeeMapper::toResponse)
-                .toList();
+    Sort sort =
+            direction.equalsIgnoreCase("desc")
+            ?
+            Sort.by(sortBy).descending()
+            :
+            Sort.by(sortBy).ascending();
 
-    }
+
+    Pageable pageable =
+            PageRequest.of(
+                    page,
+                    size,
+                    sort
+            );
+
+
+    return repository.findAll(pageable)
+            .map(EmployeeMapper::toResponse);
+
+}
 
     @Override
     public EmployeeResponse findById(Long id) {

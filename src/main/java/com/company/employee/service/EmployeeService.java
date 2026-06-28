@@ -1,6 +1,6 @@
 package com.company.employee.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import com.company.employee.dto.EmployeeRequest;
 import com.company.employee.dto.EmployeeResponse;
@@ -9,7 +9,13 @@ public interface EmployeeService {
 
     EmployeeResponse save(EmployeeRequest request);
 
-    List<EmployeeResponse> findAll();
+    Page<EmployeeResponse> findAll(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    );
+
 
     EmployeeResponse findById(Long id);
 
