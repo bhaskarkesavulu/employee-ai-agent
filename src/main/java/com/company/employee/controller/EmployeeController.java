@@ -2,6 +2,7 @@ package com.company.employee.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.employee.dto.EmployeeRequest;
 import com.company.employee.dto.EmployeeResponse;
+import com.company.employee.payload.APIResponse;
 import com.company.employee.service.EmployeeService;
 
 import jakarta.validation.Valid;
@@ -26,18 +28,40 @@ public class EmployeeController {
     private final EmployeeService service;
 
     @PostMapping
-    public EmployeeResponse create(
-            @Valid
-            @RequestBody EmployeeRequest request) {
+    public ResponseEntity<APIResponse<EmployeeResponse>> create(
+            @Valid @RequestBody EmployeeRequest request) {
 
-        return service.save(request);
+        return ResponseEntity.ok(
 
+                APIResponse.<EmployeeResponse>builder()
+
+                        .success(true)
+
+                        .message("Employee created successfully")
+
+                        .data(service.save(request))
+
+                        .build()
+
+        );
     }
 
     @GetMapping
-    public List<EmployeeResponse> getAll() {
+    public ResponseEntity<APIResponse<List<EmployeeResponse>>> getAll(){
 
-        return service.findAll();
+        return ResponseEntity.ok(
+
+            APIResponse.<List<EmployeeResponse>>builder()
+
+                    .success(true)
+
+                    .message("Employees fetched successfully")
+
+                    .data(service.findAll())
+
+                    .build()
+
+    );
 
     }
 
@@ -52,8 +76,7 @@ public class EmployeeController {
     @PutMapping("/{id}")
     public EmployeeResponse update(
             @PathVariable Long id,
-            @Valid
-            @RequestBody EmployeeRequest request) {
+            @Valid @RequestBody EmployeeRequest request) {
 
         return service.update(id, request);
 
