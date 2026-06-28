@@ -1,17 +1,18 @@
 package com.company.employee.service.impl;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.company.employee.dto.EmployeeRequest;
 import com.company.employee.dto.EmployeeResponse;
 import com.company.employee.entity.Employee;
 import com.company.employee.exception.EmployeeNotFoundException;
 import com.company.employee.mapper.EmployeeMapper;
+import com.company.employee.payload.PageResponse;
 import com.company.employee.repository.EmployeeRepository;
 import com.company.employee.service.EmployeeService;
 
@@ -44,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Page<EmployeeResponse> findAll(
+    public PageResponse<EmployeeResponse> findAll(
             int page,
             int size,
             String sortBy,
@@ -63,8 +64,16 @@ public class EmployeeServiceImpl implements EmployeeService {
                         sort
                 );
 
-        return repository.findAll(pageable)
-                .map(EmployeeMapper::toResponse);
+        Page<EmployeeResponse> employeePage
+                = repository.findAll(pageable)
+                        .map(EmployeeMapper::toResponse);
+
+        return PageResponse.<EmployeeResponse>builder()
+                .content(employeePage.getContent())
+                .currentPage(employeePage.getNumber())
+                .totalPages(employeePage.getTotalPages())
+                .totalElements(employeePage.getTotalElements())
+                .build();
 
     }
 

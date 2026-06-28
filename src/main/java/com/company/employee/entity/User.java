@@ -2,6 +2,8 @@ package com.company.employee.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 
 @Getter
 @Setter
@@ -23,19 +25,16 @@ import lombok.Setter;
 
 public class User {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(unique = true)
     private String username;
 
-
     private String password;
 
-
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 }
