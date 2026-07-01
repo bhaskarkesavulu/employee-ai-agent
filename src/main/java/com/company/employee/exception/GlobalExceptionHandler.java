@@ -1,13 +1,11 @@
 package com.company.employee.exception;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -19,30 +17,22 @@ public class GlobalExceptionHandler {
                     GlobalExceptionHandler.class
             );
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>>
-            handleValidation(
-                    MethodArgumentNotValidException ex) {
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEmployeeNotFound(
+            EmployeeNotFoundException ex) {
 
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult()
-                .getFieldErrors()
-                .forEach(error -> {
-
-                    errors.put(
-                            error.getField(),
-                            error.getDefaultMessage()
-                    );
-
-                });
+        ErrorResponse response =
+                new ErrorResponse(
+                        LocalDateTime.now(),
+                        HttpStatus.NOT_FOUND.value(),
+                        "Not Found",
+                        ex.getMessage());
         log.error(
-                "Employee not found: {}",
+                "Employee not found exception: {}",
                 ex.getMessage()
         );
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-
+        return new ResponseEntity<>(response,
+                HttpStatus.NOT_FOUND);
     }
 
 }
