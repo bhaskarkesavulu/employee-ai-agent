@@ -1,11 +1,9 @@
+version: "3.9"
+
 services:
-
   mysql:
-
     image: mysql:8.4
-
     container_name: mysql-db
-
     restart: always
 
     environment:
@@ -22,15 +20,11 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
-      retries: 5
-
+      retries: 10
 
   employee-ai-agent:
-
     build: .
-
     container_name: employee-ai-agent
-
     restart: always
 
     depends_on:
@@ -41,14 +35,9 @@ services:
       - "2026:2026"
 
     environment:
-
-      DB_URL: jdbc:mysql://mysql:3306/ai_agent_db?useSSL=false&serverTimezone=UTC
-
+      DB_URL: jdbc:mysql://mysql:3306/ai_agent_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       DB_USERNAME: root
-
       DB_PASSWORD: root
 
-
 volumes:
-
   mysql_data:
